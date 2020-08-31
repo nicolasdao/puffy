@@ -13,7 +13,7 @@
   "homepage": "https://github.com/nicolasdao/puffy#readme",
   "scripts": {
     "lint": "eslint src/ test/ --fix",
-    "push": "git push --follow-tags origin master",
+    "push": "git push --follow-tags origin master && npm publish",
     "rls": "standard-version --release-as",
     "test": "mocha --exit",
     "v": "node -e \"console.log(require('./package.json').version)\""
