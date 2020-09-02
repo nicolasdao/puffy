@@ -170,7 +170,19 @@ const s2cCase = s => (s || '').replace(/_+/g,'_').replace(/_[^_]/g, m => m[1].to
  */
 const c2sCase = s => (s || '').replace(/\s/g, '').split(/(?=[A-Z]{1})/g).map(x => x.toLowerCase()).join('_')
 
-// Transforms { helloWorld: 'Nic' } to { hello_world: 'Nic' }
+/**
+ * Convert capital case to camel case
+ * @param  {String} s 	e.g., "HelloWorld"
+ * @return {String}   	e.g., "helloWorld"
+ */
+const capital2cCase = s => s2cCase((s || '').replace(/^./, s => s.toLowerCase()))
+
+/**
+ * Converts an object's field names from camel case to snake case. For example: { helloWorld: 'Nic' } to { hello_world: 'Nic' }
+ * 
+ * @param  {Object} obj		e.g., { helloWorld: 'Nic' }
+ * @return {Object} output	e.g., { hello_world: 'Nic' }
+ */
 const objectC2Scase = obj => {
 	if (!obj || typeof(obj) != 'object') 
 		return obj 
@@ -189,7 +201,12 @@ const objectC2Scase = obj => {
 	}, {})
 }
 
-// Transforms { hello_world: 'Nic' } to { helloWorld: 'Nic' }
+/**
+ * Converts an object's field names from snake case to camel case.
+ * 
+ * @param  {Object} obj		e.g., { hello_world: 'Nic' }
+ * @return {Object} output	e.g., { helloWorld: 'Nic' }
+ */
 const objectS2Ccase = obj => {
 	if (!obj || typeof(obj) != 'object') 
 		return obj 
@@ -202,6 +219,31 @@ const objectS2Ccase = obj => {
 				acc[p] = v.map(x => objectS2Ccase(x))
 			else
 				acc[p] = objectS2Ccase(v)
+		} else
+			acc[p] = v 
+		return acc
+	}, {})
+}
+
+// Transforms 
+/**
+ * Converts an object's field names from capital case to camel case.
+ * 
+ * @param  {Object} obj		e.g., { HelloWorld: 'Nic' }
+ * @return {Object} output	e.g., { helloWorld: 'Nic' }
+ */
+const objectCapital2Ccase = obj => {
+	if (!obj || typeof(obj) != 'object') 
+		return obj 
+
+	return Object.keys(obj).reduce((acc, key) => {
+		const v = obj[key]
+		const p = capital2cCase(key)
+		if (v && typeof(v) == 'object' && !(v instanceof Date)) {
+			if (Array.isArray(v))
+				acc[p] = v.map(x => objectCapital2Ccase(x))
+			else
+				acc[p] = objectCapital2Ccase(v)
 		} else
 			acc[p] = v 
 		return acc
@@ -1166,8 +1208,10 @@ module.exports = {
 	converter: {
 		s2cCase,
 		c2sCase,
+		capital2cCase,
 		objectC2Scase,
 		objectS2Ccase,
+		objectCapital2Ccase,
 		encoder,
 		nbrToCurrency,
 		addZero,

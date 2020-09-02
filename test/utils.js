@@ -9,7 +9,7 @@
 // To skip a test, either use 'xit' instead of 'it', or 'describe.skip' instead of 'describe'
 
 const { assert } = require('chai')
-const { url, obj:{ merge, mirror, set:setProperty}, converter: { objectS2Ccase, s2cCase }, promise:{ retry, delay } } = require('../src')
+const { url, obj:{ merge, mirror, set:setProperty}, converter: { objectS2Ccase, s2cCase, objectCapital2Ccase }, promise:{ retry, delay } } = require('../src')
 
 describe('utils', () => {
 	describe('#url.getInfo', () => {
@@ -156,6 +156,19 @@ describe('utils', () => {
 				moreInfo: 'Hello',
 				first_name:'Nic',
 				place_of_birth: 'Liege'
+			})
+			assert.equal(Object.keys(o).length, 3,'01')
+			assert.equal(o.moreInfo, 'Hello','02')
+			assert.equal(o.firstName, 'Nic','03')
+			assert.equal(o.placeOfBirth, 'Liege','04')
+		})
+	})
+	describe('#converter.objectCapital2Ccase', () => {
+		it('Should convert an object with capital case fields to camel case fields.', () => {
+			const o = objectCapital2Ccase({
+				MoreInfo: 'Hello',
+				First_name:'Nic',
+				Place_of_birth: 'Liege'
 			})
 			assert.equal(Object.keys(o).length, 3,'01')
 			assert.equal(o.moreInfo, 'Hello','02')
