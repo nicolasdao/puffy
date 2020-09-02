@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/nicolasdao/puffy/compare/v1.1.0...v1.2.0) (2020-09-02)
+
+
+### Features
+
+* Add support for validating string with special characters ([4c9f62c](https://github.com/nicolasdao/puffy/commit/4c9f62c8694b1f27e218c5f91ca4615c1c3fe5fe))
+
 ## [1.1.0](https://github.com/nicolasdao/puffy/compare/v1.0.3...v1.1.0) (2020-09-02)
 
 
