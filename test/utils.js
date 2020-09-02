@@ -9,7 +9,13 @@
 // To skip a test, either use 'xit' instead of 'it', or 'describe.skip' instead of 'describe'
 
 const { assert } = require('chai')
-const { url, obj:{ merge, mirror, set:setProperty}, converter: { objectS2Ccase, s2cCase, objectCapital2Ccase }, promise:{ retry, delay } } = require('../src')
+const { 
+	url, 
+	obj:{ merge, mirror, set:setProperty}, 
+	converter: { objectS2Ccase, s2cCase, objectCapital2Ccase }, 
+	promise:{ retry, delay },
+	validate
+} = require('../src')
 
 describe('utils', () => {
 	describe('#url.getInfo', () => {
@@ -302,6 +308,17 @@ describe('utils', () => {
 				assert.isOk(15 <= seq[1].time && seq[1].time <= 20 , '05')
 				done()
 			}).catch(done)
+		})
+	})
+	describe('#validate.specialChar', () => {
+		it('01 - Should validate that a string contains at least one special character', () => {
+			//  !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
+			const specialChars = [' ', '!', '"', '#', '$', '%','&', '\'', '(', ')', '*', '+',',', '-', '.', '/', ':', ';','<', '=', '>', '?', '@', '[',']', '^', '_', '`', '{', '|','}', '~']
+			const invalidString = 'hellonic'
+			assert.isNotOk(validate.specialChar(invalidString), '0')
+			specialChars.forEach((specialChar, idx) => {
+				assert.isOk(validate.specialChar(`${invalidString}${specialChar}`), `${idx+1}`)
+			})
 		})
 	})
 })

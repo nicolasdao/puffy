@@ -1169,6 +1169,10 @@ const validateIsDate = (d, options={ exception: { toggle: false, message: null }
 	return test
 }
 
+const SPECIAL_CHAR_REGEX = /[ !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/
+const SPECIAL_CHAR = ' !"#$%&\'()*+,-./:;<=>?@[]^_`{|}~'
+const validateSpecialChar = (value='') => SPECIAL_CHAR_REGEX.test(value)
+
 //////////////////////////                          END VALIDATE HELPERS                                ////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1263,8 +1267,10 @@ module.exports = {
 	validate: {
 		url: validateUrl,
 		date: validateIsDate,
-		email: validateEmail
+		email: validateEmail,
+		specialChar: validateSpecialChar
 	},
+	specialChars: SPECIAL_CHAR,
 	string: {
 		plural
 	}
