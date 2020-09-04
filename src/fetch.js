@@ -67,6 +67,23 @@ const _processResponse = (res, uri, options={}) => {
 		.catch(() => ({ status: res.status, data: res, headers: res.headers }))
 }
 
+/**
+ * Converts any 'body' object into a supported type by the HTTP fetch API. The rules work as follow:
+ * - If the body type is native, then no need to do anything. Native types are: 
+ * 		- 'string'
+ * 		- 'Buffer'
+ * 		- 'FormData'
+ * 		- 'URLSearchParams'
+ * - If the body type if not native, then use the content type defined in the 'header' object to define which type to use:
+ * 		- headers['content-type']: undefined -> Convert body to string
+ * 		- headers['content-type']: application/x-www-form-urlencoded -> Convert body to URLSearchParams
+ * 		- headers['content-type']: multipart/form-data -> Convert body to FormData
+ * 
+ * @param  {String} headers['Content-Type']		HTTP request header's content type. Influences what the body's type is. 
+ * @param  {Object} body						Random object that might have to be converted. 
+ * 
+ * @return {Object}	legitBody					
+ */
 const _getBody = (headers, body) => {
 	const bodyType = typeof(body)
 	const nativeBody = !body || bodyType == 'string' || (body instanceof Buffer) || (body instanceof FormData) || (body instanceof URLSearchParams)
@@ -77,7 +94,6 @@ const _getBody = (headers, body) => {
 		? ''
 		: headers['Content-Type'] || headers['content-type'] || '').toLowerCase().trim()
 
-	// const multipart/form-data
 	const isUrlEncoded = contentType == 'application/x-www-form-urlencoded'
 	const isFormEncoded = contentType == 'multipart/form-data'
 	if ((isUrlEncoded || isFormEncoded) && bodyType == 'object') {
