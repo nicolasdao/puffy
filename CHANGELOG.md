@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/nicolasdao/puffy/compare/v1.2.1...v1.2.2) (2020-10-04)
+
+
+### Bug Fixes
+
+* validate.url fails to confirm that http://localhost:80 is a valid URL ([3c8663b](https://github.com/nicolasdao/puffy/commit/3c8663b283dae78b65b646b99fe8ca7f802436cf))
+
 ### [1.2.1](https://github.com/nicolasdao/puffy/compare/v1.2.0...v1.2.1) (2020-09-04)
 
 ## [1.2.0](https://github.com/nicolasdao/puffy/compare/v1.1.0...v1.2.0) (2020-09-02)
