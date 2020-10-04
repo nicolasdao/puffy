@@ -207,6 +207,16 @@ const wrapErrors = (msg, errors, options) => {
 	}
 }
 
+const mergeErrors = (errors=[]) => {
+	if (!errors.length)
+		return new Error()
+
+	const error = new Error(errors[0].message)
+	error.stack = errors.map(e => e.stack||'' ).filter(x => x).join('\n')
+
+	return error
+}
+
 class HttpError extends Error {
 	constructor(message, code, category) {
 		super(message)
@@ -228,6 +238,7 @@ module.exports = {
 	throwIfInvalidEmail,
 	catchErrors,
 	wrapErrors,
-	HttpError
+	HttpError,
+	mergeErrors
 }
 
