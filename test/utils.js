@@ -321,6 +321,28 @@ describe('utils', () => {
 			})
 		})
 	})
+	describe('#validate.url', () => {
+		it('01 - Should validate that a URL is valid or not.', () => {
+			const goodUrls = [
+				'https://cloudlessconsulting.com', 
+				'http://www.example.com/dewde?query=hello#world', 
+				'http://localhost:80'
+			]
+			const badUrls = [
+				null, 
+				'hello', 
+				'https:cs.com', 
+				'https://example', 
+				'http://'
+			]
+			
+			let counter = 0
+			for (let url of goodUrls)
+				assert.isOk(validate.url(url), `${++counter} - ${url} should be a valid URL.`)
+			for (let url of badUrls)
+				assert.isNotOk(validate.url(url), `${++counter} - ${url} should be an invvalid URL.`)
+		})
+	})
 })
 
 
