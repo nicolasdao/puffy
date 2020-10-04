@@ -29,9 +29,10 @@ const _breakdownQuery = querystring => {
 }
 
 /**
- * [description]
- * @param  {Object} query [description]
- * @return {String}       [description]
+ * Create a URL query string. 
+ * 
+ * @param  {Object} query e.g., { hello: 'world' }
+ * @return {String}       e.g., '?hello=world'
  */
 const _rebuildQueryString = query => {
 	if (!query)
@@ -39,9 +40,16 @@ const _rebuildQueryString = query => {
 	const queryString = Object.keys(query).reduce((acc,key) => {
 		if (key) {
 			const value = query[key]
-			if (value !== null && value !== '' && value !== undefined) {
+			const t = typeof(value)
+			const allowedType = t != 'object' || value.value
+			if (value !== null && value !== '' && value !== undefined && allowedType) {
 				const sep = acc === '' ? '?' : '&'
-				acc = `${acc}${sep}${key}=${encodeURIComponent(value)}`
+				const val = 
+					t == 'string' ? encodeURIComponent(value) : 
+						t != 'object' ? encodeURIComponent(`${value}`) :
+							value.noEscape ? value.value : encodeURIComponent(value.value)
+				
+				acc = `${acc}${sep}${key}=${val}`
 			}
 		}
 		return acc
@@ -61,7 +69,7 @@ const _rebuildQueryString = query => {
  * @return {String}  results.origin      	e.g., 'https://neap.co'
  * @return {String}  results.pathname       e.g., '/tech/blog/index.html'
  * @return {String}  results.querystring    e.g., '?article=serverless&source=medium'
- * @return {Object}  results.query    		e.g., { article: 'serverless', source: 'medium' }
+ * @return {Object}  results.query    		e.g., { article: 'serverless', source: 'medium' } }
  * @return {String}  results.hash       	e.g., '#conclusion'
  * @return {String}  results.uri       		e.g., 'https://neap.co/tech/blog/index.html?article=serverless&source=medium#conclusion'
  * @return {String}  results.shorturi      	e.g., 'https://neap.co/tech/blog/index.html'
@@ -111,11 +119,11 @@ const getUrlInfo = (uri, option={}) => {
  * @param  {String} uriInfo.origin			e.g., 'http://neap.co' This will be ignored if a 'host' property is defined
  * @param  {String} uriInfo.pathname		e.g., '/blog/index.html' The extension will be replaced by the 'ext' property if it has been defined
  * @param  {String} uriInfo.querystring		e.g., '?hello=world' 
- * @param  {String} uriInfo.query			e.g., { hello: 'world' }
+ * @param  {String} uriInfo.query			e.g., { hello: 'world', error_msg:{ noEscape:true, value:'{{error_msg}}' }
  * @param  {String} uriInfo.hash			e.g., '#boom'
  * @param  {String} uriInfo.ext				e.g., '.aspx' This overrides the the extension in the 'pathname'
  * 
- * @return {String}         				e.g., 'http://neap.co/blog/index.aspx?hello=world#boom'
+ * @return {String}         				e.g., 'http://neap.co/blog/index.aspx?hello=world&error_msg={{error_msg}}#boom'
  */
 const buildUrl = uriInfo => {
 	let { protocol, host, origin, pathname, querystring, query, hash, ext } = uriInfo || {}

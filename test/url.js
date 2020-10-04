@@ -12,8 +12,8 @@ const { assert } = require('chai')
 const { url } = require('../src')
 
 describe('url', () => {
-	describe('#getInfo', () => {
-		it('Should deconstruct any URI', () => {
+	describe('getInfo', () => {
+		it('01 - Should deconstruct any URI', () => {
 			const uri_01 = url.getInfo('https://neap.co')
 			assert.equal(uri_01.host, 'neap.co', '01')
 			assert.equal(uri_01.protocol, 'https:', '02')
@@ -45,7 +45,9 @@ describe('url', () => {
 			assert.equal(uri_02.pathnameonly, '/search/results/people', '26')
 			assert.equal(uri_02.contentType, 'text/javascript', '27')
 		})
-		it('Should rebuild URI', () => {
+	})
+	describe('buildUrl', () => {
+		it('02 - Should rebuild URI', () => {
 			const uri_01 = url.getInfo(`https://www.linkedin.com/search/results/people/index.js?facetGeoRegion=%5B%22au%3A0%22%5D&origin=FACETED_SEARCH&title=${encodeURIComponent('director of marketing')}#hello`)
 			const new_uri_01 = url.buildUrl(Object.assign(uri_01, { 
 				host:'neap.co', 
@@ -74,6 +76,31 @@ describe('url', () => {
 			
 			assert.equal(new_uri_01, 'https://neap.co/search/splash.html?facetGeoRegion=%5B%22au%3A0%22%5D&origin=FACETED_SEARCH&title=founder%20%26%20director&age=37#hello', '01')
 			assert.equal(new_uri_02, 'http://localhost:3520/auth?test=hello&error_msg=The%20default%20OAuth%20succeeded%2C%20but%20HTTP%20GET%20to%20\'userPortal.api\'%20http%3A%2F%2Flocalhost%3A3520%2Fuser%2Fin%20failed.%20Details%3A%20Invalid%20username%20or%20password.&error_code=400', '02')
+		})
+		it('03 - Should support complex query params that allows to not escape special characters', () => {
+			const uri = url.buildUrl({
+				'host': 'localhost:3520',
+				'protocol': 'http:',
+				'origin': 'http://localhost:3520',
+				'pathname': '/auth',
+				'querystring': '?test=hello',
+				'query': {
+					'test': 'hello',
+					'error_msg': {
+						noEscape: true,
+						value:'{{error_msg}}'
+					},
+					'error_code': 400
+				},
+				'hash': '',
+				'ext': '',
+				'uri': 'http://localhost:3520/auth?test=hello',
+				'shorturi': 'http://localhost:3520/auth',
+				'pathnameonly': '/auth',
+				'contentType': 'application/octet-stream'
+			})
+			
+			assert.equal(uri, 'http://localhost:3520/auth?test=hello&error_msg={{error_msg}}&error_code=400', '02')
 		})
 	})
 })
