@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/nicolasdao/puffy/compare/v1.2.2...v1.3.0) (2020-10-04)
+
+
+### Features
+
+* Add support for mergeErrors ([7a3b983](https://github.com/nicolasdao/puffy/commit/7a3b983cb59467689219f4d3234e44142fb4d910))
+
 ### [1.2.2](https://github.com/nicolasdao/puffy/compare/v1.2.1...v1.2.2) (2020-10-04)
 
 
