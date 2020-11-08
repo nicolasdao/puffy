@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/nicolasdao/puffy/compare/v1.4.0...v1.4.1) (2020-11-08)
+
+
+### Bug Fixes
+
+* math.median is not returning correct results ([ebe612a](https://github.com/nicolasdao/puffy/commit/ebe612a94e6f4c368bc8dd471458974f25ccaa19))
+
 ## [1.4.0](https://github.com/nicolasdao/puffy/compare/v1.3.0...v1.4.0) (2020-10-04)
 
 
