@@ -801,12 +801,12 @@ const median = (arr=[], fn) => {
 		return null
 	// odd length
 	else if (l & 1) 
-		return arr.map(x => f(x)).sort((a,b) => a >= b)[Math.floor(l/2)]
+		return arr.map(x => f(x)).sort((a,b) => a-b)[Math.floor(l/2)]
 	// even length
 	else {
 		const idx_1 = Math.floor(l/2)
 		const idx_0 = idx_1 - 1
-		const a = arr.map(x => f(x)).sort((a,b) => a >= b)
+		const a = arr.map(x => f(x)).sort((a,b) => a-b)
 		return (a[idx_0] + a[idx_1])/2
 	}
 }
