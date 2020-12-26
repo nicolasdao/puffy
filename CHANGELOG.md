@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/nicolasdao/puffy/compare/v1.4.1...v1.5.0) (2020-12-26)
+
+
+### Features
+
+* Add new signature (support for single string URL argument) for the fetch API ([35e2323](https://github.com/nicolasdao/puffy/commit/35e2323c1d6fb502bf0dc5a5f1584b97f33a32d2))
+
 ### [1.4.1](https://github.com/nicolasdao/puffy/compare/v1.4.0...v1.4.1) (2020-11-08)
 
 
