@@ -142,20 +142,22 @@ const _getBody = (headers, body) => {
  *  	}
  *  }, 'POST').then(({ data }) => console.log(data)) // shows JSON object
  * 
- * @param  {String}			uri				e.g., 'https://example.com'
- * @param  {Object}			headers			e.g., { Authorization: 'bearer 12345' }
- * @param  {String|Object}	body			e.g., { hello: 'world' }
- * @param  {Writable} 		streamReader	
- * @param  {String}			dst				Absolute file path on local machine where to store the file (e.g., '/Documents/images/img.jpeg')
- * @param  {String} 		parsing			Forces the response to be parsed using one of the following output formats:
- *                              				'json', 'text', 'buffer'
- * @param  {String}			method			Valid values: 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'
+ * @param  {String|Object}	input					e.g., 'https://example.com' or { uri: 'https://example.com' }
+ * @param  {String}			input.uri				e.g., 'https://example.com'
+ * @param  {Object}			input.headers			e.g., { Authorization: 'bearer 12345' }
+ * @param  {String|Object}	input.body				e.g., { hello: 'world' }
+ * @param  {Writable} 		input.streamReader	
+ * @param  {String}			input.dst				Absolute file path on local machine where to store the file (e.g., '/Documents/images/img.jpeg')
+ * @param  {String} 		input.parsing			Forces the response to be parsed using one of the following output formats:
+ *                              				  	'json', 'text', 'buffer'
+ * @param  {String}			method					Valid values: 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'
  * 
  * @yield {Number}   		output.status
  * @yield {Object}   		output.data
  * @yield {Object}   		output.headers
  */
-const _fetch = ({ uri, headers={}, body, streamReader, dst, parsing }, method) => {
+const _fetch = (input={}, method) => {
+	const { uri, headers={}, body, streamReader, dst, parsing } = typeof(input) == 'string' ? { uri:input } : input
 	const _body = _getBody(headers, body)
 	return fetch(uri, { method, headers, body:_body }).then(res => _processResponse(res, uri, { streamReader, dst, parsing }))
 }
