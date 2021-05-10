@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.1](https://github.com/nicolasdao/puffy/compare/v1.5.0...v1.5.1) (2021-05-10)
+
+
+### Bug Fixes
+
+* Vulnerabilities ([fedcbeb](https://github.com/nicolasdao/puffy/commit/fedcbeb87041fde83e171c2d27246ee7faf08538))
+
 ## [1.5.0](https://github.com/nicolasdao/puffy/compare/v1.4.1...v1.5.0) (2020-12-26)
 
 
