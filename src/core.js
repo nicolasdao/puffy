@@ -1071,24 +1071,52 @@ const setProperty = (obj,prop, value) => {
 }
 
 /**
+ * Gets the value for that prop. 
+ * 
+ * @param  {Object} obj		e.g., { name:'Nic', friends:[{ name:'Michael' }], events:[['hello'],['world']] }
+ * @param  {String} prop	e.g., 'name', or 'friends[0]' or 'events[1][0]'
+ * 
+ * @return {Object} value	e.g., 'Nic', { name:'Michael' }, 'world' 
+ */
+const getPropValue = (obj, prop) => {
+	if (!prop)
+		return obj 
+	const arrayPositions = prop.match(/\[(.*?)\]/g)
+	if (arrayPositions) {
+		const p = prop.match(/^(.*?)\[/)[1]
+		let value = p ? obj[p] : obj
+		for (let i=0,l=arrayPositions.length;i<l;i++) {
+			const idx = arrayPositions[i].replace(/(^.|.$)/g,'')
+			value = (value||[])[idx]
+		}
+		return value
+	} else
+		return obj[prop]
+}
+/**
  * Gets an object's property based on the property path. 
  * 
  * @param  {Object} obj   Original object.
- * @param  {String} prop  Property to be set (e.g., 'name' or 'project.name').
- * @return {Object}       Original object with the property set.
+ * @param  {String} prop  e.g., 'name' or 'project.name' or 'friends[1].events[0][1].name' or '[2]'
+ * 
+ * @return {Object}       Value.
  */
 const getProperty = (obj,prop) => {
 	if (!prop)
 		return obj 
 	
 	obj = obj || {}
-	const props = prop.split('.')
-	const l = props.length-1
-	return props.reduce((acc,p,idx) => {
-		if (idx == l)
-			return acc[p]
-		return acc[p] || {}
-	},obj)
+	const props = prop.split('.').filter(x => x)
+	const l = props.length
+	const lastIndex = l-1
+	let value = obj
+	for (let i=0;i<l;i++) {
+		if (i == lastIndex)
+			value = getPropValue(value, props[i])
+		else
+			value = getPropValue(value, props[i]) || {}
+	}
+	return value
 }
 
 /**
