@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/nicolasdao/puffy/compare/v1.5.1...v1.6.0) (2021-05-18)
+
+
+### Features
+
+* Add support for array in getProperty ([bc133b4](https://github.com/nicolasdao/puffy/commit/bc133b4dc3eacb2f2140b736813c3b9c52ca6ded))
+
 ### [1.5.1](https://github.com/nicolasdao/puffy/compare/v1.5.0...v1.5.1) (2021-05-10)
 
 
