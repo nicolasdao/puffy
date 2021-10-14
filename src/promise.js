@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
 */
 
-const { math } = require('./core')
+const { math } = require('puffy-core')
 
 const TIMEOUT = 'RJDtm78=_timeout'
 

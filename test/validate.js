@@ -12,17 +12,6 @@ const { assert } = require('chai')
 const { validate } = require('../src')
 
 describe('validate', () => {
-	describe('#specialChar', () => {
-		it('01 - Should validate that a string contains at least one special character', () => {
-			//  !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
-			const specialChars = [' ', '!', '"', '#', '$', '%','&', '\'', '(', ')', '*', '+',',', '-', '.', '/', ':', ';','<', '=', '>', '?', '@', '[',']', '^', '_', '`', '{', '|','}', '~']
-			const invalidString = 'hellonic'
-			assert.isNotOk(validate.specialChar(invalidString), '0')
-			specialChars.forEach((specialChar, idx) => {
-				assert.isOk(validate.specialChar(`${invalidString}${specialChar}`), `${idx+1}`)
-			})
-		})
-	})
 	describe('#url', () => {
 		it('01 - Should validate that a URL is valid or not.', () => {
 			const goodUrls = [
@@ -40,9 +29,9 @@ describe('validate', () => {
 			
 			let counter = 0
 			for (let url of goodUrls)
-				assert.isOk(validate.url(url), `${++counter} - ${url} should be a valid URL.`)
+				assert.isOk(validate.validateUrl(url), `${++counter} - ${url} should be a valid URL.`)
 			for (let url of badUrls)
-				assert.isNotOk(validate.url(url), `${++counter} - ${url} should be an invvalid URL.`)
+				assert.isNotOk(validate.validateUrl(url), `${++counter} - ${url} should be an invvalid URL.`)
 		})
 	})
 })

@@ -9,7 +9,7 @@
 // To skip a test, either use 'xit' instead of 'it', or 'describe.skip' instead of 'describe'
 
 const { assert } = require('chai')
-const { url } = require('../src')
+const url = require('../src/url')
 
 describe('url', () => {
 	describe('getInfo', () => {
