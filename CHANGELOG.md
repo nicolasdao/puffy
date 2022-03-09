@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/nicolasdao/puffy/compare/v2.0.1...v2.0.2) (2022-03-09)
+
 ### [2.0.1](https://github.com/nicolasdao/puffy/compare/v2.0.0...v2.0.1) (2022-01-05)
 
 ## [2.0.0](https://github.com/nicolasdao/puffy/compare/v1.7.0...v2.0.0) (2021-10-14)
