@@ -13,6 +13,8 @@ npm i puffy
 >	- [`fetch`](#fetch)
 >	- [`identity`](#identity)
 > * [Unit test](#unit-test)
+> * [Annexes](#annexes)
+>	- [Wrapping the `fetch` API into `catchErrors`](#wrapping-the-fetch-api-into-catchErrors)
 > * [License](#license)
 
 # APIs
@@ -32,6 +34,8 @@ Please refer to the puffy-core documentation to learn more about the core APIs.
 > NOTE: If the APIs you need are solely contained in the `puffy-core`, we recommend to install `puffy-core` rather than `puffy`.
 
 ## `fetch`
+
+> This API can benefit from being wrapped into the `catchErrors` API, so it becomes more reliable. To see a live example, please refer to the annexes under the [Wrapping the `fetch` API into `catchErrors`](#wrapping-the-fetch-api-into-catchErrors) section.  
 
 ```js
 const { fetch } = require('puffy')
@@ -102,6 +106,70 @@ console.log(identity.new({ long:true,  sep:'-', lowerCase:true })) // m49q9-3xca
 
 ```
 npm test
+```
+
+# Annexes
+## Wrapping the `fetch` API into `catchErrors`
+
+```js
+const { fetch, error: { catchErrors, wrapErrorsFn } } = require('puffy')
+
+const apiFetch = verb => 
+	/**
+	 * `
+	 * @param  {String}	endpoint	e.g., 'v1/profile' or '/v3/user'
+	 * @param  {Object}	options
+	 * @param  {Object}		.headers
+	 * @param  {Object}		.body
+	 * 
+	 * @return {Object}	resp
+	 * @return {Number}		.status
+	 * @return {Object}		.data
+	 */
+	(endpoint, options) => catchErrors((async () => {
+		const httpVerb = (verb||'').trim().toUpperCase()
+		const e = wrapErrorsFn(`Failed to execute HTTP ${httpVerb}`)
+		if (!verb)
+			throw e('Missing required argument \'verb\'')
+		if (!endpoint)
+			throw e('Missing required argument \'endpoint\'')
+		if (!process.env.API_KEY)
+			throw e('Missing required environment variable \'API_KEY\'')
+		if (!process.env.BASE_URL)
+			throw e('Missing required environment variable \'BASE_URL\'')
+
+		endpoint = (endpoint||'').trim().replace(/^\//,'')
+
+		if (!endpoint)
+			throw e('Wrong argument exception. \'endpoint\' cannot be empty.')
+
+		const uri = `${process.env.BASE_URL}/${endpoint}`
+
+		const verbApi = verb.trim().toLowerCase() 
+		if (!fetch[verbApi])
+			throw e(`Wrong argument exception. 'verb'  value '${verb}' not supported.`)		
+
+		const { headers, body } = options || {}
+		const { status, data } = await fetch[verbApi]({ 
+			uri, 
+			headers: { ...(headers||{}), Authorization: `Bearer ${process.env.API_KEY}` }, 
+			body 
+		})
+
+		if (!status || status > 399)
+			throw e(`HTTP ${httpVerb} failed (status ${status||'UNKNOWN_CODE'}). Details: ${JSON.stringify(data||{})}`)
+
+		return { status, data }
+	})())
+
+module.exports = {
+	api: {
+		'get': apiFetch('get'),
+		'post': apiFetch('post'),
+		'put': apiFetch('put'),
+		'delete': apiFetch('delete')
+	}
+}
 ```
 
 # License
