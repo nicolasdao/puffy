@@ -7,6 +7,7 @@
 */
 
 // To skip a test, either use 'xit' instead of 'it', or 'describe.skip' instead of 'describe'
+// To only run a test, use 'it.only' instead of 'it'.
 
 const { assert } = require('chai')
 const { converter: { objectS2Ccase, s2cCase, objectCapital2Ccase } } = require('../src')

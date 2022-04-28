@@ -1,0 +1,4 @@
+{
+	"name": "dummy_json.txt",
+	"content": "Bla"
+}

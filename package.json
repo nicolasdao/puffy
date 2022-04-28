@@ -21,6 +21,7 @@
   "author": "Nicolas Dao",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "fast-glob": "^3.2.11",
     "form-data": "^2.4.0",
     "node-fetch": "^2.6.1",
     "puffy-core": "^0.5.3"
