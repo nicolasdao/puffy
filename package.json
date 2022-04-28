@@ -1,6 +1,6 @@
 {
   "name": "puffy",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Puffy is a collection of helpers to deal with the most common coding chores (e.g., error handling, retry, math, ...)",
   "main": "src/index.js",
   "repository": {
