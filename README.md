@@ -1,3 +1,4 @@
+	
 # PUFFY
 		
 A collection of CommonJS utilities to help manage common programming tasks in NodeJS projects only. This package is designed to work along side [`puffy-core`](https://github.com/nicolasdao/puffy-core) which exposes an extra set of [usefull APIs](https://github.com/nicolasdao/puffy-core#table-of-contents) that are compatible with both NodeJS and native JS.
@@ -36,57 +37,76 @@ Please refer to the puffy-core documentation to learn more about the core APIs.
 
 ## `fetch`
 
-> This API can benefit from being wrapped into the `catchErrors` API, so it becomes more reliable. To see a live example, please refer to the annexes under the [Wrapping the `fetch` API into `catchErrors`](#wrapping-the-fetch-api-into-catchErrors) section.  
+> This API can benefit from being wrapped into the `catchErrors` API, so it becomes more reliable. To see a live example, please refer to the annexes under the [Wrapping the `fetch` API into `catchErrors`](#wrapping-the-fetch-api-into-catchErrors) section.	
 
 ```js
 const { fetch } = require('puffy')
 
 const main = async () => {
-  // fetch
-  const { status, data } = await fetch.get({
-    uri: 'http://localhost:4220/entry/32',
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    },
-    body: {
-      hello: 'World',
-      myFile: document.querySelector('input[type="file"]').files[0]
-    }
-  })
+	// fetch
+	const { status, data } = await fetch.get({
+		uri: 'http://localhost:4220/entry/32'
+	})
 
-  // POST URL encoded data
-  const { status:status2, data:data2 } = await fetch.post({
-    uri: 'http://localhost:4220/entry/32',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: {
-      hello: 'World'
-    }
-  })
+	// POST using 'multipart/form-data'
+	const { status, data } = await fetch.post({
+		uri: 'http://localhost:4220/entry/32',
+		headers: {
+			'Content-Type': 'multipart/form-data'
+		},
+		body: {
+			hello: 'World',
+			myFile: document.querySelector('input[type="file"]').files[0]
+		}
+	})
 
-  // GraphQL
-  const { status:status3, data:data3 } = await fetch.graphql.query({ 
-    uri: 'http://localhost:4220/graphql', 
-    headers:{}, 
-    query: `{ 
-      users(where:{ id:1 }){ 
-        id 
-        name 
-      } 
-    }` 
-  })
+	// POST content as file attachement
+	const { status:status2, data:data2 } = await fetch.post({
+		uri: 'http://localhost:4220/entry/32',
+		headers: {
+			'Content-Type': 'multipart/form-data'
+		},
+		body: 'hello world', // This could be a Buffer from a local file.
+		file: {
+			name: 'my_cool_file.txt',
+			contentType: 'text/plain', // Default: 'application/'
+			boundary: 'hello' // if this not specified, a random number is used.
+		}
+	})
 
-  const { status:status4, data:data4 } = await fetch.graphql.mutate({ 
-    uri: 'http://localhost:4220/graphql', 
-    headers:{}, 
-    query: `{ 
-      userInsert(input:{ name:"Nic" }){ 
-        id 
-        name 
-      } 
-    }` 
-  })
+	// POST URL encoded data
+	const { status:status2, data:data2 } = await fetch.post({
+		uri: 'http://localhost:4220/entry/32',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: {
+			hello: 'World'
+		}
+	})
+
+	// GraphQL
+	const { status:status3, data:data3 } = await fetch.graphql.query({ 
+		uri: 'http://localhost:4220/graphql', 
+		headers:{}, 
+		query: `{ 
+			users(where:{ id:1 }){ 
+				id 
+				name 
+			} 
+		}` 
+	})
+
+	const { status:status4, data:data4 } = await fetch.graphql.mutate({ 
+		uri: 'http://localhost:4220/graphql', 
+		headers:{}, 
+		query: `{ 
+			userInsert(input:{ name:"Nic" }){ 
+				id 
+				name 
+			} 
+		}` 
+	})
 }
 
 main()
@@ -103,86 +123,86 @@ const folderPath = __dirname
 
 const main = async () => {
 
-  // fileSystem.exist API
-  const [fileExistsErrors, fileExists] = await fileSystem.exists(filePath)
-  if (fileExistsErrors)
-    throw fileExistsErrors[0]
-  console.log(`File '${filePath}' exists: ${fileExists}`) 
+	// fileSystem.exist API
+	const [fileExistsErrors, fileExists] = await fileSystem.exists(filePath)
+	if (fileExistsErrors)
+		throw fileExistsErrors[0]
+	console.log(`File '${filePath}' exists: ${fileExists}`) 
 
 
 
 
-  // fileSystem.file.read API
-  const [contentBufErrors, contentBuf] = await fileSystem.file.read(filePath)
-  if (contentBufErrors)
-    throw contentBufErrors[0]
-  console.log(contentBuf) // <Buffer 42 53 44 ... 1486 more bytes>
+	// fileSystem.file.read API
+	const [contentBufErrors, contentBuf] = await fileSystem.file.read(filePath)
+	if (contentBufErrors)
+		throw contentBufErrors[0]
+	console.log(contentBuf) // <Buffer 42 53 44 ... 1486 more bytes>
 
-  const [contentErrors, content] = await fileSystem.file.read(filePath, { encoding:'string' })
-  if (contentErrors)
-    throw contentErrors[0]
-  console.log(content) // Hello world
-
-
-
-
-  // fileSystem.file.list API
-  const [files01Errors, files01] = await fileSystem.file.list(folderPath) // Returns all the files directly under 'folderPath'
-  if (files01Errors)
-    throw files01Errors[0]
-  console.log(files01) // ['/Users/you/CHANGELOG.md', ..., '/Users/you/package.json']
-
-  const [files02Errors, files02] = await fileSystem.file.list(folderPath, { pattern:'**/*.*' }) // Returns all the files under 'folderPath', incl. files under the nested folders.
-  if (files02Errors)
-    throw files02Errors[0]
-  console.log(files02) // ['/Users/you/CHANGELOG.md', ... 4820 more items]
-  
-  const [files03Errors, files03] = await fileSystem.file.list(folderPath, { pattern:'**/*.*', ignore:'**/node_modules/**' }) // Returns all the files under 'folderPath', incl. files under the nested folders, except the 'node_modules' folder.
-  if (files03Errors)
-    throw files03Errors[0]
-  console.log(files03) // ['/Users/you/CHANGELOG.md', ... 100 more items]
+	const [contentErrors, content] = await fileSystem.file.read(filePath, { encoding:'string' })
+	if (contentErrors)
+		throw contentErrors[0]
+	console.log(content) // Hello world
 
 
 
 
-  // fileSystem.dir.loadContent API (same API signatures as fileSystem.file.list)
-  const [filesContent01Errors, filesContent01] = await fileSystem.dir.loadContent(folderPath) // Returns all the files directly under 'folderPath'
-  if (filesContent01Errors)
-    throw filesContent01Errors[0]
-  console.log(filesContent01) // [{ file:'/Users/you/CHANGELOG.md', content:<Buffer 23 20 50...> }, ..., { file: '/Users/you/package.json', content:<Buffer 23 20 50...> }]
+	// fileSystem.file.list API
+	const [files01Errors, files01] = await fileSystem.file.list(folderPath) // Returns all the files directly under 'folderPath'
+	if (files01Errors)
+		throw files01Errors[0]
+	console.log(files01) // ['/Users/you/CHANGELOG.md', ..., '/Users/you/package.json']
 
-  const [filesContent02Errors, filesContent02] = await fileSystem.dir.loadContent(folderPath, { encoding:'string' }) // Returns all the files directly under 'folderPath'
-  if (filesContent02Errors)
-    throw filesContent02Errors[0]
-  console.log(filesContent02) // [{ file:'/Users/you/CHANGELOG.md', content:'Hello...' }, ..., { file: '/Users/you/package.json', content:'World...' }]
-
-
-
-
-  // fileSystem.file.write API
-  const [newFile01Errors] = await fileSystem.file.write(join(__dirname, './newfile.txt'), 'hello new file')
-  if (newFile01Errors)
-    throw newFile01Errors[0]
-
-  const [newFile02Errors] = await fileSystem.file.write(join(__dirname, './newfile.txt'), 'something else that overrides the previous content')
-  if (newFile02Errors)
-    throw newFile02Errors[0]
-
-  const [newFile03Errors] = await fileSystem.file.write(join(__dirname, './newfile.txt'), 'more content', { append:true }) // By default the appendSep is '\n'
-  if (newFile03Errors)
-    throw newFile03Errors[0]
-
-  const [newFile04Errors] = await fileSystem.file.write(join(__dirname, './newfile.txt'), ' that is important', { append:true, appendSep:'' }) // append the new content on the last line.
-  if (newFile04Errors)
-    throw newFile04Errors[0]
+	const [files02Errors, files02] = await fileSystem.file.list(folderPath, { pattern:'**/*.*' }) // Returns all the files under 'folderPath', incl. files under the nested folders.
+	if (files02Errors)
+		throw files02Errors[0]
+	console.log(files02) // ['/Users/you/CHANGELOG.md', ... 4820 more items]
+	
+	const [files03Errors, files03] = await fileSystem.file.list(folderPath, { pattern:'**/*.*', ignore:'**/node_modules/**' }) // Returns all the files under 'folderPath', incl. files under the nested folders, except the 'node_modules' folder.
+	if (files03Errors)
+		throw files03Errors[0]
+	console.log(files03) // ['/Users/you/CHANGELOG.md', ... 100 more items]
 
 
 
 
-  // fileSystem.file.delete API
-  const [deleteErrors] = await fileSystem.file.delete(join(__dirname, './newfile.txt'))
-  if (deleteErrors)
-    throw deleteErrors[0]
+	// fileSystem.dir.loadContent API (same API signatures as fileSystem.file.list)
+	const [filesContent01Errors, filesContent01] = await fileSystem.dir.loadContent(folderPath) // Returns all the files directly under 'folderPath'
+	if (filesContent01Errors)
+		throw filesContent01Errors[0]
+	console.log(filesContent01) // [{ file:'/Users/you/CHANGELOG.md', content:<Buffer 23 20 50...> }, ..., { file: '/Users/you/package.json', content:<Buffer 23 20 50...> }]
+
+	const [filesContent02Errors, filesContent02] = await fileSystem.dir.loadContent(folderPath, { encoding:'string' }) // Returns all the files directly under 'folderPath'
+	if (filesContent02Errors)
+		throw filesContent02Errors[0]
+	console.log(filesContent02) // [{ file:'/Users/you/CHANGELOG.md', content:'Hello...' }, ..., { file: '/Users/you/package.json', content:'World...' }]
+
+
+
+
+	// fileSystem.file.write API
+	const [newFile01Errors] = await fileSystem.file.write(join(__dirname, './newfile.txt'), 'hello new file')
+	if (newFile01Errors)
+		throw newFile01Errors[0]
+
+	const [newFile02Errors] = await fileSystem.file.write(join(__dirname, './newfile.txt'), 'something else that overrides the previous content')
+	if (newFile02Errors)
+		throw newFile02Errors[0]
+
+	const [newFile03Errors] = await fileSystem.file.write(join(__dirname, './newfile.txt'), 'more content', { append:true }) // By default the appendSep is '\n'
+	if (newFile03Errors)
+		throw newFile03Errors[0]
+
+	const [newFile04Errors] = await fileSystem.file.write(join(__dirname, './newfile.txt'), ' that is important', { append:true, appendSep:'' }) // append the new content on the last line.
+	if (newFile04Errors)
+		throw newFile04Errors[0]
+
+
+
+
+	// fileSystem.file.delete API
+	const [deleteErrors] = await fileSystem.file.delete(join(__dirname, './newfile.txt'))
+	if (deleteErrors)
+		throw deleteErrors[0]
 }
 
 main()
@@ -195,8 +215,8 @@ const { identity } = require('puffy')
 
 console.log(identity.new()) // m1dyRsRRPR
 console.log(identity.new({ long:true })) // LV6EBIpXWchZmXpOvtKh
-console.log(identity.new({ long:true,  sep:'-' })) // oF5xh-U499Q-1PDcE-sY6Xu
-console.log(identity.new({ long:true,  sep:'-', lowerCase:true })) // m49q9-3xcaa-zmtes-p7fip
+console.log(identity.new({ long:true, sep:'-' })) // oF5xh-U499Q-1PDcE-sY6Xu
+console.log(identity.new({ long:true, sep:'-', lowerCase:true })) // m49q9-3xcaa-zmtes-p7fip
 ```
 
 # Unit test
@@ -214,10 +234,10 @@ const { fetch, error: { catchErrors, wrapErrorsFn } } = require('puffy')
 const apiFetch = verb => 
 	/**
 	 * `
-	 * @param  {String}	endpoint	e.g., 'v1/profile' or '/v3/user'
-	 * @param  {Object}	options
-	 * @param  {Object}		.headers
-	 * @param  {Object}		.body
+	 * @param	{String}	endpoint	e.g., 'v1/profile' or '/v3/user'
+	 * @param	{Object}	options
+	 * @param	{Object}		.headers
+	 * @param	{Object}		.body
 	 * 
 	 * @return {Object}	resp
 	 * @return {Number}		.status
@@ -244,7 +264,7 @@ const apiFetch = verb =>
 
 		const verbApi = verb.trim().toLowerCase() 
 		if (!fetch[verbApi])
-			throw e(`Wrong argument exception. 'verb'  value '${verb}' not supported.`)		
+			throw e(`Wrong argument exception. 'verb'	value '${verb}' not supported.`)		
 
 		const { headers, body } = options || {}
 		const { status, data } = await fetch[verbApi]({ 
@@ -280,15 +300,15 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
+	 list of conditions and the following disclaimer.
 
 2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+	 this list of conditions and the following disclaimer in the documentation
+	 and/or other materials provided with the distribution.
 
 3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
+	 contributors may be used to endorse or promote products derived from
+	 this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE

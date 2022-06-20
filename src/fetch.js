@@ -81,35 +81,63 @@ const _processResponse = (res, uri, options={}) => {
  * 
  * @param  {String} headers['Content-Type']		HTTP request header's content type. Influences what the body's type is. 
  * @param  {Object} body						Random object that might have to be converted. 
+ * @param  {Object}	file						only valid when headers['Content-Type'] is 'multipart/form-data'
+ * @param  {String}		.name					e.g., 'hello.jpg'
+ * @param  {String}		.boundary				e.g., '12345'
+ * @param  {String}		.contentType			e.g., 'image/jpg'. Default 'application/octet-stream'
  * 
  * @return {Object}	legitBody					
  */
-const _getBody = (headers, body) => {
+const _getBody = (headers, body, file) => {
 	const bodyType = typeof(body)
 	const nativeBody = !body || bodyType == 'string' || (body instanceof Buffer) || (body instanceof FormData) || (body instanceof URLSearchParams)
-	if (nativeBody)
-		return body
-
 	const contentType = (!headers || typeof(headers) != 'object' 
 		? ''
 		: headers['Content-Type'] || headers['content-type'] || '').toLowerCase().trim()
 
 	const isUrlEncoded = contentType == 'application/x-www-form-urlencoded'
 	const isFormEncoded = contentType == 'multipart/form-data'
-	if ((isUrlEncoded || isFormEncoded) && bodyType == 'object') {
-		const params = isUrlEncoded ? new URLSearchParams() : new FormData()
-		for (let key in body) {
-			const value = body[key]
-			if (value !== null && value !== undefined) {
-				if (isFormEncoded && typeof(value) == 'object' && !(value instanceof Buffer))
-					params.append(key, Buffer.from(JSON.stringify(value)), { contentType:'application/json' })
-				else
-					params.append(key, value)
+	
+	if (nativeBody && !isFormEncoded)
+		return body
+
+	if (isUrlEncoded || isFormEncoded) {
+		const bodyIsObject = body && bodyType == 'object'
+		const bodyIsBuffer = bodyIsObject && body instanceof Buffer
+		if (!bodyIsBuffer && bodyIsObject) {
+			const params = isUrlEncoded ? new URLSearchParams() : new FormData()			
+			for (let key in body) {
+				const value = body[key]
+				if (value !== null && value !== undefined) {
+					if (isFormEncoded && typeof(value) == 'object' && !(value instanceof Buffer)) {
+						const buf = Buffer.from(JSON.stringify(value))
+						params.append(key, buf, { contentType:'application/json', knownLength: Buffer.byteLength(buf) })
+					} else
+						params.append(key, value)
+				}
 			}
-		}
-		return params
+			return params
+		} else if (isFormEncoded) {
+			const buf = bodyIsBuffer ? body : Buffer.from(body||'')
+			const params = new FormData()
+			const options = { 
+				contentType: 'application/octet-stream',
+				knownLength: Buffer.byteLength(buf) 
+			}		
+			if (file) {
+				if (file.name)
+					options.filename = file.name
+				if (file.contentType)
+					options.contentType = file.contentType
+				if (file.boundary)
+					params.setBoundary(file.boundary)
+			}
+			params.append('file', buf, options)
+			return params
+		} else
+			return JSON.stringify(body||'')	
 	} else 
-		return JSON.stringify(body)
+		return JSON.stringify(body||'')
 }
 
 /**
@@ -143,22 +171,27 @@ const _getBody = (headers, body) => {
  *  }, 'POST').then(({ data }) => console.log(data)) // shows JSON object
  * 
  * @param  {String|Object}	input					e.g., 'https://example.com' or { uri: 'https://example.com' }
- * @param  {String}			input.uri				e.g., 'https://example.com'
- * @param  {Object}			input.headers			e.g., { Authorization: 'bearer 12345' }
- * @param  {String|Object}	input.body				e.g., { hello: 'world' }
- * @param  {Writable} 		input.streamReader	
- * @param  {String}			input.dst				Absolute file path on local machine where to store the file (e.g., '/Documents/images/img.jpeg')
- * @param  {String} 		input.parsing			Forces the response to be parsed using one of the following output formats:
+ * @param  {String}				.uri				e.g., 'https://example.com'
+ * @param  {Object}				.headers			e.g., { Authorization: 'bearer 12345' }
+ * @param  {String|Object}		.body				e.g., { hello: 'world' }
+ * @param  {Object}				.file				only valid when headers['Content-Type'] is 'multipart/form-data'
+ * @param  {String}					.name			e.g., 'hello.jpg'
+ * @param  {String}					.boundary		e.g., '12345'
+ * @param  {String}					.contentType	e.g., 'image/jpg'. Default 'application/octet-stream'
+ * @param  {Writable} 			.streamReader	
+ * @param  {String}				.dst				Absolute file path on local machine where to store the file (e.g., '/Documents/images/img.jpeg')
+ * @param  {String} 			.parsing			Forces the response to be parsed using one of the following output formats:
  *                              				  	'json', 'text', 'buffer'
  * @param  {String}			method					Valid values: 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'
  * 
- * @yield {Number}   		output.status
- * @yield {Object}   		output.data
- * @yield {Object}   		output.headers
+ * @return {Object}   		output
+ * @return {Number}   			.status
+ * @return {Object}   			.data
+ * @return {Object}   			.headers
  */
 const _fetch = (input={}, method) => {
-	const { uri, headers={}, body, streamReader, dst, parsing } = typeof(input) == 'string' ? { uri:input } : input
-	const _body = _getBody(headers, body)
+	const { uri, headers={}, body, streamReader, dst, parsing, file } = typeof(input) == 'string' ? { uri:input } : input
+	const _body = _getBody(headers, body, file)
 	return fetch(uri, { method, headers, body:_body }).then(res => _processResponse(res, uri, { streamReader, dst, parsing }))
 }
 
