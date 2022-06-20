@@ -43,7 +43,7 @@ Please refer to the puffy-core documentation to learn more about the core APIs.
 const { fetch } = require('puffy')
 
 const main = async () => {
-	// fetch
+	// fetch data
 	const { status, data } = await fetch.get({
 		uri: 'http://localhost:4220/entry/32'
 	})
