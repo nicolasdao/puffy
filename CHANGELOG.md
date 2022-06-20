@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/nicolasdao/puffy/compare/v2.1.3...v2.2.0) (2022-06-20)
+
+
+### Features
+
+* 'fetch' Add support for posting file as attachement ([3c2caad](https://github.com/nicolasdao/puffy/commit/3c2caad6db059030e19634e7804f09acb4bb63dc))
+
 ### [2.1.3](https://github.com/nicolasdao/puffy/compare/v2.1.2...v2.1.3) (2022-06-01)
 
 ### [2.1.2](https://github.com/nicolasdao/puffy/compare/v2.1.1...v2.1.2) (2022-05-26)
