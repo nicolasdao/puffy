@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/nicolasdao/puffy/compare/v2.4.1...v3.0.0) (2024-01-14)
+
+
+### Features
+
+* Upgrade puffy-core ([99ca9d4](https://github.com/nicolasdao/puffy/commit/99ca9d4f35e4c70db7022e1248caf1d714d0d923))
+
 ### [2.4.1](https://github.com/nicolasdao/puffy/compare/v2.4.0...v2.4.1) (2023-01-09)
 
 ## [2.4.0](https://github.com/nicolasdao/puffy/compare/v2.3.0...v2.4.0) (2022-12-25)
