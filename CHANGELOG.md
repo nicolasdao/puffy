@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/nicolasdao/puffy/compare/v3.2.0...v3.3.0) (2025-07-10)
+
+
+### Bug Fixes
+
+* vulnerabilities issues ([1a1ec4b](https://github.com/nicolasdao/puffy/commit/1a1ec4bdee8af2f4790ad0f3ac7b6bc73d0f03ba))
+
 ## [3.2.0](https://github.com/nicolasdao/puffy/compare/v3.1.0...v3.2.0) (2025-05-16)
 
 
