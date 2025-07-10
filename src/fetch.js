@@ -190,9 +190,9 @@ const _getBody = (headers, body, file) => {
  * @return {Object}   			.headers
  */
 const _fetch = (input={}, method) => {
-	const { uri, headers={}, body, streamReader, dst, parsing, file, agent } = typeof(input) == 'string' ? { uri:input } : input
+	const { uri, headers={}, body, streamReader, dst, parsing, file, agent, ...rest } = typeof(input) == 'string' ? { uri:input } : input
 	const _body = _getBody(headers, body, file)
-	return import("node-fetch").then(mod => mod.default(uri, { method, headers, body:_body, agent }).then(res => _processResponse(res, uri, { streamReader, dst, parsing })))
+	return import("node-fetch").then(mod => mod.default(uri, { ...rest, method, headers, body:_body, agent }).then(res => _processResponse(res, uri, { streamReader, dst, parsing })))
 }
 
 const postData = input => _fetch(input, 'POST')
