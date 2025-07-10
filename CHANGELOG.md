@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.1](https://github.com/nicolasdao/puffy/compare/v3.5.0...v3.5.1) (2025-07-10)
+
+
+### Features
+
+* Add support for all available options for node-fetch ([e2013c3](https://github.com/nicolasdao/puffy/commit/e2013c313dc68d8eb558566065c0873932a4b258))
+
 ## [3.5.0](https://github.com/nicolasdao/puffy/compare/v3.4.0...v3.5.0) (2025-07-10)
 
 ## [3.4.0](https://github.com/nicolasdao/puffy/compare/v3.3.0...v3.4.0) (2025-07-10)
