@@ -14,6 +14,8 @@ npm i puffy
 >	- [`fetch`](#fetch)
 >	- [`fileSystem`](#filesystem)
 >	- [`identity`](#identity)
+> * [Troubleshooting](#troubleshooting)
+>	- [`fetch` - `Parse Error: Invalid header value char` aka `HPE_INVALID_HEADER_TOKEN`](#fetch---parse-error-invalid-header-value-char-aka-hpe_invalid_header_token)
 > * [Unit test](#unit-test)
 > * [Annexes](#annexes)
 >	- [Wrapping the `fetch` API into `catchErrors`](#wrapping-the-fetch-api-into-catchErrors)
@@ -219,6 +221,17 @@ console.log(identity.new({ long:true, sep:'-' })) // oF5xh-U499Q-1PDcE-sY6Xu
 console.log(identity.new({ long:true, sep:'-', lowerCase:true })) // m49q9-3xcaa-zmtes-p7fip
 ```
 
+# Troubleshooting
+## `fetch` - `Parse Error: Invalid header value char` aka `HPE_INVALID_HEADER_TOKEN`
+
+This is a known issue with `node-fetch`. Use the `insecureHTTPParser` option as follow:
+
+```js
+fetch.post({
+	uri: 'https://hello.com',
+	insecureHTTPParser: true
+})
+```
 # Unit test
 
 ```
