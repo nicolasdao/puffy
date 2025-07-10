@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
 */
 const fs = require('fs')
-const fetch = require('node-fetch')
+// const fetch = require('node-fetch')
 const { Writable } = require('stream')
 const { getInfo } = require('./url')
 const FormData = require('form-data')
@@ -192,7 +192,7 @@ const _getBody = (headers, body, file) => {
 const _fetch = (input={}, method) => {
 	const { uri, headers={}, body, streamReader, dst, parsing, file, agent } = typeof(input) == 'string' ? { uri:input } : input
 	const _body = _getBody(headers, body, file)
-	return fetch(uri, { method, headers, body:_body, agent }).then(res => _processResponse(res, uri, { streamReader, dst, parsing }))
+	return import("node-fetch").then(mod => mod.default(uri, { method, headers, body:_body, agent }).then(res => _processResponse(res, uri, { streamReader, dst, parsing })))
 }
 
 const postData = input => _fetch(input, 'POST')
